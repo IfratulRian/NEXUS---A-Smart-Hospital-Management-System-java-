@@ -19,7 +19,7 @@ javac -d out $sources
 java -cp out Main
 ```
 
-Data is created automatically in `data/` on initial startup (patients, doctors, nurses, departments, appointments, medical records, medicines, emergency, invoices, insurance, users, and audit logs).
+On first startup, `data/` is populated with editable Bangladesh-context demo records, including 75 patients, local staff and medicine names, appointments, emergency cases, inpatient admissions, and BDT billing. Existing records are preserved; seeding only fills empty sample-data collections. Data is stored in `data/` (patients, doctors, nurses, departments, appointments, medical records, medicines, emergency, invoices, insurance, users, and audit logs).
 
 ---
 

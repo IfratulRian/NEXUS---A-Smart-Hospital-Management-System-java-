@@ -7,6 +7,6 @@ public record MedicineCharge(String medicineId, String medicineName, int quantit
         this(medicineId, medicineName, quantity, unitPrice, quantity * unitPrice);
     }
     @Override public double getAmount() { return total; }
-    @Override public String getDescription() { return "Medication: " + medicineName + " (" + quantity + " x $" + String.format("%.2f", unitPrice) + ")"; }
+    @Override public String getDescription() { return "Medication: " + medicineName + " (" + quantity + " x BDT " + String.format("%.2f", unitPrice) + ")"; }
     @Override public String getCategory() { return "PHARMACY"; }
 }

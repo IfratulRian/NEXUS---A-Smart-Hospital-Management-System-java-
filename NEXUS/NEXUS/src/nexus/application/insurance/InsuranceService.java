@@ -76,7 +76,7 @@ public class InsuranceService {
         InsurancePolicy policy = getPolicy(claim.getPolicyNumber());
         double eligible = policy.calculateEligibleCoverage(claim.getClaimAmount());
         if (approvedAmount > eligible) {
-            throw new ValidationException("Approved amount ($" + approvedAmount + ") exceeds eligible policy coverage ($" + eligible + ")");
+            throw new ValidationException("Approved amount (BDT " + approvedAmount + ") exceeds eligible policy coverage (BDT " + eligible + ")");
         }
         policy.deduct(approvedAmount);
         policyRepository.save(policy);

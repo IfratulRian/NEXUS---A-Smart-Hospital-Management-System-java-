@@ -1,8 +1,12 @@
 package nexus;
 
+import nexus.application.bootstrap.ApplicationBootstrap;
+import nexus.application.config.ApplicationConfig;
+import nexus.application.dashboard.DashboardData;
 import nexus.application.appointment.AppointmentRequest;
 import nexus.application.appointment.AppointmentService;
 import nexus.application.patient.PatientService;
+import nexus.application.patient.PatientSortOption;
 import nexus.domain.appointment.*;
 import nexus.domain.billing.Invoice;
 import nexus.domain.billing.charges.ConsultationCharge;
@@ -75,6 +79,7 @@ public class NexusTests {
         run("Insurance claim state transition invariants", NexusTests::claimTransitions);
         run("Hospital department bed allocation and release", NexusTests::hospitalBedAllocation);
         run("User factory and account status enforcement", NexusTests::userAccountManagement);
+        run("Bangladesh demo data seeds dashboard once", NexusTests::demoDataSeeding);
 
         System.out.printf("%n%d passed, %d failed%n", passed, failed);
         if (failed > 0) System.exit(1);
@@ -113,6 +118,45 @@ public class NexusTests {
         Patient loaded = new FilePatientRepository(file).findById("PAT-00001").orElseThrow();
         check("John Doe".equals(loaded.getName()) && loaded.getBloodGroup() == BloodGroup.O_POSITIVE, "fields preserved");
         check(loaded.getAllergies().equals(List.of("penicillin")), "allergies preserved");
+    }
+
+    private static void demoDataSeeding() throws Exception {
+        Path data = Files.createTempDirectory("nexus-demo-data");
+        ApplicationConfig config = new ApplicationConfig("NEXUS TEST HOSPITAL", data);
+        var firstRun = ApplicationBootstrap.initialize(config);
+        try {
+            User admin = firstRun.authentication().login("admin", "admin123");
+            DashboardData dashboard = firstRun.dashboards().getDashboardForUser(admin);
+            check(firstRun.patients().listPatients(PatientSortOption.BY_NAME).size() == 75,
+                    "first startup seeds 75 patients");
+            check(!firstRun.patients().searchByName("Karim").isEmpty()
+                            && !firstRun.patients().searchByName("Rian").isEmpty()
+                            && !firstRun.patients().searchByName("Nadia").isEmpty(),
+                    "sample patients use Bangladesh-context names");
+            check(firstRun.doctors().listDoctors().size() == 16 && firstRun.nurses().listNurses().size() == 24,
+                    "first startup seeds clinical staff");
+            check("16 / 24 (66.7%)".equals(dashboard.metrics().get("Hospital Bed Occupancy")),
+                    "dashboard reflects seeded admissions and bed occupancy");
+            check("40".equals(dashboard.metrics().get("Today's Appointments"))
+                            && "7".equals(dashboard.metrics().get("Emergency Triage Queue"))
+                            && "3".equals(dashboard.metrics().get("Low Stock Drug Alerts")),
+                    "dashboard operational queues are populated: " + dashboard.metrics());
+            check(dashboard.metrics().get("Total Revenue Collected").startsWith("BDT ")
+                            && dashboard.metrics().get("Total Outstanding Dues").startsWith("BDT ")
+                            && !dashboard.metrics().get("Total Revenue Collected").equals("BDT 0.00")
+                            && !dashboard.metrics().get("Total Outstanding Dues").equals("BDT 0.00"),
+                    "dashboard shows collected and outstanding BDT amounts");
+        } finally {
+            firstRun.shutdown();
+        }
+
+        var secondRun = ApplicationBootstrap.initialize(config);
+        try {
+            check(secondRun.patients().listPatients(PatientSortOption.BY_NAME).size() == 75,
+                    "later startup preserves the existing sample dataset");
+        } finally {
+            secondRun.shutdown();
+        }
     }
 
     private static void passwordHashing() {

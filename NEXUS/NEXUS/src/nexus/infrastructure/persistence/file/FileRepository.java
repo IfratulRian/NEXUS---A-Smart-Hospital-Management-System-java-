@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,12 @@ public abstract class FileRepository<T extends Identifiable<String>> implements 
     @Override
     public synchronized void save(T entity) {
         cache.put(entity.getId(), entity);
+        flush();
+    }
+
+    @Override
+    public synchronized void saveAll(Collection<T> entities) {
+        entities.forEach(entity -> cache.put(entity.getId(), entity));
         flush();
     }
 

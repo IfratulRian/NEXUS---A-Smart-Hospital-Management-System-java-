@@ -59,8 +59,8 @@ public class DashboardService {
                 metrics.put("Today's Appointments", String.valueOf(todayApps.size()));
                 metrics.put("Emergency Triage Queue", String.valueOf(emergencyService.listTriageQueue().size()));
                 metrics.put("Low Stock Drug Alerts", String.valueOf(pharmacyService.listLowStock().size()));
-                metrics.put("Total Revenue Collected", String.format("$%.2f", billingService.getTotalRevenue()));
-                metrics.put("Total Outstanding Dues", String.format("$%.2f", billingService.getTotalOutstanding()));
+                metrics.put("Total Revenue Collected", String.format("BDT %.2f", billingService.getTotalRevenue()));
+                metrics.put("Total Outstanding Dues", String.format("BDT %.2f", billingService.getTotalOutstanding()));
             }
             case DOCTOR -> {
                 String staffId = user.getStaffId().orElse("");

@@ -56,13 +56,13 @@ public class InsurancePolicy implements Identifiable<String> {
 
     public void deduct(double approvedAmount) {
         if (approvedAmount > getRemainingCoverage() + 0.001) {
-            throw new ValidationException("Approved amount exceeds remaining coverage ($" + String.format("%.2f", getRemainingCoverage()) + ")");
+            throw new ValidationException("Approved amount exceeds remaining coverage (BDT " + String.format("%.2f", getRemainingCoverage()) + ")");
         }
         this.usedAmount += approvedAmount;
     }
 
     @Override
     public String toString() {
-        return "Policy[" + policyNumber + ", provider=" + providerName + ", coverage=" + coveragePercent + "%, remaining=$" + String.format("%.2f", getRemainingCoverage()) + "]";
+        return "Policy[" + policyNumber + ", provider=" + providerName + ", coverage=" + coveragePercent + "%, remaining=BDT " + String.format("%.2f", getRemainingCoverage()) + "]";
     }
 }

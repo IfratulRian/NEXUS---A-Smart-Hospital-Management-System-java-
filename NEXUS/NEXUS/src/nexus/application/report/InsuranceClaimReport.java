@@ -28,8 +28,8 @@ public class InsuranceClaimReport implements Report {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Total Claims Filed:     ").append(total).append("\n");
-        sb.append(String.format("Total Claim Amount:     $%.2f\n", totalClaimed));
-        sb.append(String.format("Total Approved Amount:  $%.2f (%.1f%% approval rate)\n\n", totalApproved,
+        sb.append(String.format("Total Claim Amount:     BDT %.2f\n", totalClaimed));
+        sb.append(String.format("Total Approved Amount:  BDT %.2f (%.1f%% approval rate)\n\n", totalApproved,
                 totalClaimed == 0 ? 0.0 : (totalApproved / totalClaimed * 100.0)));
 
         sb.append("--- Claims by Adjudication Status ---\n");

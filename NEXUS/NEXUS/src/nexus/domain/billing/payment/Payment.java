@@ -35,6 +35,6 @@ public abstract class Payment implements Identifiable<String> {
 
     @Override
     public String toString() {
-        return "Payment[" + id + ", " + method + ", $" + String.format("%.2f", amount) + "]";
+        return "Payment[" + id + ", " + method + ", BDT " + String.format("%.2f", amount) + "]";
     }
 }

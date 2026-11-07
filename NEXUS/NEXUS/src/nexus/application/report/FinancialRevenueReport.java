@@ -31,14 +31,14 @@ public class FinancialRevenueReport implements Report {
                 .collect(Collectors.groupingBy(Payment::getMethod, Collectors.summingDouble(Payment::getAmount)));
 
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("Total Billed:      $%.2f\n", totalBilled));
-        sb.append(String.format("Total Collected:   $%.2f (%.1f%% collection rate)\n", totalCollected,
+        sb.append(String.format("Total Billed:      BDT %.2f\n", totalBilled));
+        sb.append(String.format("Total Collected:   BDT %.2f (%.1f%% collection rate)\n", totalCollected,
                 totalBilled == 0 ? 0.0 : (totalCollected / totalBilled * 100.0)));
-        sb.append(String.format("Outstanding Dues:  $%.2f\n\n", outstanding));
+        sb.append(String.format("Outstanding Dues:  BDT %.2f\n\n", outstanding));
 
         sb.append("--- Revenue by Payment Channel ---\n");
         byMethod.forEach((method, amount) ->
-                sb.append(String.format("  * %-18s : $%.2f\n", method, amount)));
+                sb.append(String.format("  * %-18s : BDT %.2f\n", method, amount)));
         return sb.toString();
     }
 }

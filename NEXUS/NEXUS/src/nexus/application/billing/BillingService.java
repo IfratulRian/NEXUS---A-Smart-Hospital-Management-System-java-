@@ -65,7 +65,7 @@ public class BillingService {
         Invoice inv = getInvoice(invoiceId);
         if (amount <= 0) throw new ValidationException("Payment amount must be greater than zero");
         if (amount > inv.getBalanceDue() + 0.001) {
-            throw new ValidationException("Payment amount exceeds balance due ($" + String.format("%.2f", inv.getBalanceDue()) + ")");
+            throw new ValidationException("Payment amount exceeds balance due (BDT " + String.format("%.2f", inv.getBalanceDue()) + ")");
         }
 
         Payment payment = strategy.pay(paymentIdGen.next(), inv.getId(), amount);

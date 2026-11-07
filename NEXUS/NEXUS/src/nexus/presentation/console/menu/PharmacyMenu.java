@@ -97,13 +97,13 @@ public class PharmacyMenu extends Menu {
         String id = in.readLine("Medicine ID (e.g. MED-00001)");
         int qty = in.readInt("Quantity to dispense", 1, 1000);
         double charged = pharmacyService.dispense(id, qty);
-        out.success("Dispensed " + qty + " units. Total price: $" + String.format("%.2f", charged));
+        out.success("Dispensed " + qty + " units. Total price: BDT " + String.format("%.2f", charged));
     }
 
     private void dispenseByPrescription() {
         String prxId = in.readLine("Prescription ID (e.g. PRX-00001)");
         double total = pharmacyService.dispenseByPrescription(prxId, medicalRecordService);
-        out.success("Prescription " + prxId + " dispensed successfully. Total medication cost: $" + String.format("%.2f", total));
+        out.success("Prescription " + prxId + " dispensed successfully. Total medication cost: BDT " + String.format("%.2f", total));
     }
 
     private void restockMedicine() {

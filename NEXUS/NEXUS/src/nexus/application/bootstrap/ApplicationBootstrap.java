@@ -69,6 +69,8 @@ public final class ApplicationBootstrap {
         ClaimRepository claimRepository = new FileClaimRepository(data.resolve("insurance/claims.txt"));
 
         seedDefaultAdmin(userRepository, userFactory);
+        DemoDataSeeder.seedCatalogs(patientRepository, doctorRepository, nurseRepository, appointmentRepository,
+                medicineRepository, emergencyRepository, invoiceRepository);
 
         // Multi-channel notifications
         NotificationService notificationService = new NotificationService(NotifierFactory.createDefaultNotifiers(System.out));
@@ -83,7 +85,8 @@ public final class ApplicationBootstrap {
         IdGenerator appointmentIdGen = SequentialIdGenerator.seededFrom("APP", appointmentRepository.findAll().stream().map(a -> a.getId()).toList());
         IdGenerator medicineIdGen = SequentialIdGenerator.seededFrom("MED", medicineRepository.findAll().stream().map(m -> m.getId()).toList());
         IdGenerator invoiceIdGen = SequentialIdGenerator.seededFrom("INV", invoiceRepository.findAll().stream().map(i -> i.getId()).toList());
-        IdGenerator paymentIdGen = SequentialIdGenerator.seededFrom("PAY", List.of());
+        IdGenerator paymentIdGen = SequentialIdGenerator.seededFrom("PAY",
+                invoiceRepository.findAll().stream().flatMap(i -> i.getPayments().stream()).map(p -> p.getId()).toList());
         IdGenerator emergencyIdGen = SequentialIdGenerator.seededFrom("EMG", emergencyRepository.findAll().stream().map(e -> e.getId()).toList());
         IdGenerator admissionIdGen = SequentialIdGenerator.seededFrom("ADM", admissionRepository.findAll().stream().map(a -> a.getId()).toList());
         IdGenerator recordIdGen = SequentialIdGenerator.seededFrom("REC", medicalRecordRepository.findAll().stream().map(r -> r.getId()).toList());
@@ -96,6 +99,8 @@ public final class ApplicationBootstrap {
         NurseService nurseService = new NurseService(nurseRepository, nurseIdGen, audit, session);
         Hospital hospital = new Hospital("HOSP-01", config.hospitalName());
         HospitalService hospitalService = new HospitalService(hospital, departmentRepository, admissionRepository, patientService, admissionIdGen, audit, session);
+        DemoDataSeeder.seedHospital(departmentRepository, admissionRepository, patientRepository, admissionIdGen,
+                doctorRepository, nurseRepository);
         AppointmentService appointmentService = new AppointmentService(appointmentRepository, doctorRepository, patientService, appointmentIdGen, eventBus, audit, session);
         MedicalRecordService medicalRecordService = new MedicalRecordService(medicalRecordRepository, prescriptionRepository, patientService, recordIdGen, prescriptionIdGen, audit, session);
         PharmacyService pharmacyService = new PharmacyService(medicineRepository, eventBus, audit, session);

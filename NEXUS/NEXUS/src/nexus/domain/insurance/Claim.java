@@ -59,11 +59,11 @@ public class Claim implements Identifiable<String> {
 
     public void approve(double approvedAmount) {
         if (approvedAmount <= 0 || approvedAmount > claimAmount) {
-            throw new ValidationException("Approved amount ($" + approvedAmount + ") must be > 0 and <= claim amount ($" + claimAmount + ")");
+            throw new ValidationException("Approved amount (BDT " + approvedAmount + ") must be > 0 and <= claim amount (BDT " + claimAmount + ")");
         }
         transitionTo(ClaimStatus.APPROVED);
         this.approvedAmount = approvedAmount;
-        this.notes = "Approved for $" + String.format("%.2f", approvedAmount);
+        this.notes = "Approved for BDT " + String.format("%.2f", approvedAmount);
     }
 
     public void reject(String reason) {
@@ -78,6 +78,6 @@ public class Claim implements Identifiable<String> {
 
     @Override
     public String toString() {
-        return "Claim[" + id + ", policy=" + policyNumber + ", amount=$" + String.format("%.2f", claimAmount) + ", status=" + status + "]";
+        return "Claim[" + id + ", policy=" + policyNumber + ", amount=BDT " + String.format("%.2f", claimAmount) + ", status=" + status + "]";
     }
 }

@@ -21,6 +21,6 @@ public class CashPayment extends Payment {
 
     @Override
     public String getTransactionDetails() {
-        return "Cash Tendered: $" + String.format("%.2f", tenderedAmount) + ", Change: $" + String.format("%.2f", changeGiven);
+        return "Cash Tendered: BDT " + String.format("%.2f", tenderedAmount) + ", Change: BDT " + String.format("%.2f", changeGiven);
     }
 }

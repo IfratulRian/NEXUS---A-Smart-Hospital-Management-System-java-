@@ -42,7 +42,7 @@ public class InsuranceMenu extends Menu {
         String prov = in.readValidated("Insurance provider name", Validators.NOT_BLANK);
         String patId = in.readLine("Patient ID (e.g. PAT-00001)");
         double cov = in.readNonNegativeDouble("Coverage percentage (e.g. 80.0)");
-        double maxCov = in.readNonNegativeDouble("Maximum coverage limit ($)");
+        double maxCov = in.readNonNegativeDouble("Maximum coverage limit (BDT)");
         LocalDate exp = in.readDate("Policy expiry date");
 
         InsurancePolicy pol = insuranceService.registerPolicy(new InsurancePolicy(polNum, prov, patId, cov, maxCov, exp));
@@ -52,7 +52,7 @@ public class InsuranceMenu extends Menu {
     private void submitClaim() {
         String polNum = in.readLine("Policy number");
         String invId = in.readLine("Invoice ID");
-        double amount = in.readNonNegativeDouble("Claim amount ($)");
+        double amount = in.readNonNegativeDouble("Claim amount (BDT)");
         Claim claim = insuranceService.submitClaim(polNum, invId, amount);
         out.success("Claim submitted with ID " + claim.getId() + " [Status: " + claim.getStatus() + "]");
     }
@@ -65,9 +65,9 @@ public class InsuranceMenu extends Menu {
 
     private void approveClaim() {
         String claimId = in.readLine("Claim ID");
-        double approvedAmount = in.readNonNegativeDouble("Approved settlement amount ($)");
+        double approvedAmount = in.readNonNegativeDouble("Approved settlement amount (BDT)");
         Claim claim = insuranceService.approveClaim(claimId, approvedAmount);
-        out.success("Claim " + claim.getId() + " approved for $" + String.format("%.2f", claim.getApprovedAmount()));
+        out.success("Claim " + claim.getId() + " approved for BDT " + String.format("%.2f", claim.getApprovedAmount()));
     }
 
     private void rejectClaim() {
@@ -95,7 +95,7 @@ public class InsuranceMenu extends Menu {
 
     private void printPolicies(List<InsurancePolicy> policies) {
         if (policies.isEmpty()) { out.info("No policies found."); return; }
-        out.table(List.of("Policy #", "Provider", "Patient", "Coverage %", "Remaining $", "Expiry"),
+        out.table(List.of("Policy #", "Provider", "Patient", "Coverage %", "Remaining BDT", "Expiry"),
                 policies.stream().map(p -> List.of(
                         p.getPolicyNumber(), p.getProviderName(), p.getPatientId(),
                         p.getCoveragePercent() + "%",

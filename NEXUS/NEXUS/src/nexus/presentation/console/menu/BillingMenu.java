@@ -41,8 +41,8 @@ public class BillingMenu extends Menu {
 
     private void createInvoice() {
         String patientId = in.readLine("Patient ID (e.g. PAT-00001)");
-        double discount = in.readNonNegativeDouble("Discount amount ($)");
-        double tax = in.readNonNegativeDouble("Tax / VAT amount ($)");
+        double discount = in.readNonNegativeDouble("Discount amount (BDT)");
+        double tax = in.readNonNegativeDouble("Tax / VAT amount (BDT)");
         Invoice inv = service.createInvoice(patientId, new ArrayList<>(), discount, tax);
         out.success("Invoice created with ID " + inv.getId() + " for patient " + inv.getPatientId());
     }
@@ -72,8 +72,8 @@ public class BillingMenu extends Menu {
         };
 
         Invoice updated = service.addCharge(invId, charge);
-        out.success("Charge added. New Invoice Subtotal: $" + String.format("%.2f", updated.getSubtotal())
-                + " | Total Due: $" + String.format("%.2f", updated.getBalanceDue()));
+        out.success("Charge added. New Invoice Subtotal: BDT " + String.format("%.2f", updated.getSubtotal())
+                + " | Total Due: BDT " + String.format("%.2f", updated.getBalanceDue()));
     }
 
     private void processPayment() {
@@ -84,11 +84,11 @@ public class BillingMenu extends Menu {
             return;
         }
 
-        out.info("Total Amount: $" + String.format("%.2f", inv.getTotalAmount())
-                + " | Paid: $" + String.format("%.2f", inv.getPaidAmount())
-                + " | Balance Due: $" + String.format("%.2f", inv.getBalanceDue()));
+        out.info("Total Amount: BDT " + String.format("%.2f", inv.getTotalAmount())
+                + " | Paid: BDT " + String.format("%.2f", inv.getPaidAmount())
+                + " | Balance Due: BDT " + String.format("%.2f", inv.getBalanceDue()));
 
-        double amount = in.readNonNegativeDouble("Payment amount to collect ($)");
+        double amount = in.readNonNegativeDouble("Payment amount to collect (BDT)");
 
         out.println("Select payment method:");
         out.println("  1. Cash (Strategy)");
@@ -99,7 +99,7 @@ public class BillingMenu extends Menu {
 
         PaymentStrategy strategy = switch (methodChoice) {
             case 1 -> {
-                double tendered = in.readNonNegativeDouble("Tendered cash received ($)");
+                double tendered = in.readNonNegativeDouble("Tendered cash received (BDT)");
                 yield PaymentFactory.cash(tendered);
             }
             case 2 -> {
@@ -125,7 +125,7 @@ public class BillingMenu extends Menu {
         out.success("Payment successful! Receipt ID: " + p.getId());
         out.info("Method: " + p.getMethod() + " | " + p.getTransactionDetails());
         Invoice refreshed = service.getInvoice(invId);
-        out.info("Remaining Balance Due: $" + String.format("%.2f", refreshed.getBalanceDue()) + " (Status: " + refreshed.getStatus() + ")");
+        out.info("Remaining Balance Due: BDT " + String.format("%.2f", refreshed.getBalanceDue()) + " (Status: " + refreshed.getStatus() + ")");
     }
 
     private void viewInvoice() {
@@ -137,20 +137,20 @@ public class BillingMenu extends Menu {
         out.field("Status", inv.getStatus());
         out.println("\n  --- Line Items ---");
         for (Billable c : inv.getCharges()) {
-            out.info(String.format("  [%s] %s : $%.2f", c.getCategory(), c.getDescription(), c.getAmount()));
+            out.info(String.format("  [%s] %s : BDT %.2f", c.getCategory(), c.getDescription(), c.getAmount()));
         }
         out.println("\n  --- Summary ---");
-        out.field("Subtotal", String.format("$%.2f", inv.getSubtotal()));
-        out.field("Discount", String.format("$%.2f", inv.getDiscountAmount()));
-        out.field("Tax", String.format("$%.2f", inv.getTaxAmount()));
-        out.field("Total", String.format("$%.2f", inv.getTotalAmount()));
-        out.field("Paid", String.format("$%.2f", inv.getPaidAmount()));
-        out.field("Balance Due", String.format("$%.2f", inv.getBalanceDue()));
+        out.field("Subtotal", String.format("BDT %.2f", inv.getSubtotal()));
+        out.field("Discount", String.format("BDT %.2f", inv.getDiscountAmount()));
+        out.field("Tax", String.format("BDT %.2f", inv.getTaxAmount()));
+        out.field("Total", String.format("BDT %.2f", inv.getTotalAmount()));
+        out.field("Paid", String.format("BDT %.2f", inv.getPaidAmount()));
+        out.field("Balance Due", String.format("BDT %.2f", inv.getBalanceDue()));
 
         if (!inv.getPayments().isEmpty()) {
             out.println("\n  --- Payments Received ---");
             for (Payment p : inv.getPayments()) {
-                out.info(String.format("  %s | %s | $%.2f (%s)", p.getId(), p.getMethod(), p.getAmount(), p.getTransactionDetails()));
+                out.info(String.format("  %s | %s | BDT %.2f (%s)", p.getId(), p.getMethod(), p.getAmount(), p.getTransactionDetails()));
             }
         }
         out.footer();

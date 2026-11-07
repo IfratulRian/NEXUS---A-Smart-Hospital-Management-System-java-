@@ -1,0 +1,20 @@
+TABLET	MED-00001	Napa	Paracetamol	Square Pharmaceuticals	BD-2026-0001	2027-07-07	3.0	5	10	10	
+CAPSULE	MED-00002	Seclo	Omeprazole	Beximco Pharma	BD-2027-0002	2027-08-07	5.5	6	10	20	
+SYRUP	MED-00003	Amodis	Metronidazole	Incepta Pharmaceuticals	BD-2026-0003	2027-09-07	8.0	7	10	100	
+INJECTION	MED-00004	Monas	Montelukast	Renata Limited	BD-2027-0004	2027-10-07	10.5	89	20	500	false
+OINTMENT	MED-00005	Ceevit	Vitamin C	Healthcare Pharma	BD-2026-0005	2027-11-07	13.0	92	20	20	
+TABLET	MED-00006	Ace	Paracetamol	Square Pharmaceuticals	BD-2027-0006	2027-12-07	15.5	95	20	10	
+CAPSULE	MED-00007	Orsaline	Oral rehydration salts	Beximco Pharma	BD-2026-0007	2028-01-07	18.0	98	20	20	
+SYRUP	MED-00008	Losectil	Omeprazole	Incepta Pharmaceuticals	BD-2027-0008	2028-02-07	20.5	101	20	100	
+INJECTION	MED-00009	Avolac	Lactulose	Renata Limited	BD-2026-0009	2028-03-07	23.0	104	20	500	false
+OINTMENT	MED-00010	Napa Extend	Paracetamol	Healthcare Pharma	BD-2027-0010	2028-04-07	25.5	107	20	20	
+TABLET	MED-00011	Cef-3	Cefixime	Square Pharmaceuticals	BD-2026-0011	2028-05-07	28.0	110	20	10	
+CAPSULE	MED-00012	Rupa	Rupatadine	Beximco Pharma	BD-2027-0012	2028-06-07	30.5	113	20	20	
+SYRUP	MED-00013	Fexo	Fexofenadine	Incepta Pharmaceuticals	BD-2026-0013	2028-07-07	33.0	116	20	100	
+INJECTION	MED-00014	Calbo-D	Calcium carbonate	Renata Limited	BD-2027-0014	2028-08-07	35.5	119	20	500	false
+OINTMENT	MED-00015	Azithro	Azithromycin	Healthcare Pharma	BD-2026-0015	2028-09-07	38.0	122	20	20	
+TABLET	MED-00016	Pantonix	Pantoprazole	Square Pharmaceuticals	BD-2027-0016	2028-10-07	40.5	125	20	10	
+CAPSULE	MED-00017	Neuro-B	Vitamin B complex	Beximco Pharma	BD-2026-0017	2028-11-07	43.0	128	20	20	
+SYRUP	MED-00018	Histacin	Chlorpheniramine	Incepta Pharmaceuticals	BD-2027-0018	2028-12-07	45.5	131	20	100	
+INJECTION	MED-00019	Paracetamol	Paracetamol	Renata Limited	BD-2026-0019	2029-01-07	48.0	134	20	500	false
+OINTMENT	MED-00020	Salbutamol	Salbutamol	Healthcare Pharma	BD-2027-0020	2029-02-07	50.5	137	20	20	

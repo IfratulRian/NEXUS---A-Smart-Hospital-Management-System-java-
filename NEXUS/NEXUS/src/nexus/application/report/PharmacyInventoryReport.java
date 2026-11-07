@@ -25,7 +25,7 @@ public class PharmacyInventoryReport implements Report {
         StringBuilder sb = new StringBuilder();
         sb.append("Total Registered Drug Products: ").append(all.size()).append("\n");
         sb.append("Total Inventory Units on Hand: ").append(totalUnits).append("\n");
-        sb.append(String.format("Total Inventory Valuation: $%.2f\n\n", totalValuation));
+        sb.append(String.format("Total Inventory Valuation: BDT %.2f\n\n", totalValuation));
 
         sb.append("--- Low Stock Alerts (At or below threshold) ---\n");
         if (lowStock.isEmpty()) sb.append("  All stock levels healthy.\n");
