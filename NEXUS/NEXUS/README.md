@@ -14,6 +14,30 @@ NEXUS is a console-based Java 17+ hospital management system with domain-driven 
 | Security | Provides authentication, authorization, roles, permissions, and password hashing. |
 | Data storage | Uses text/TSV files under `data/`. |
 
+## Short UML Overview
+
+```mermaid
+classDiagram
+    direction LR
+    class ApplicationLauncher
+    class ConsoleApplication
+    class ApplicationContext
+    class ApplicationServices
+    class DomainModel
+    class Infrastructure
+
+    ApplicationLauncher --> ApplicationContext : initializes
+    ApplicationLauncher --> ConsoleApplication : starts
+    ConsoleApplication --> ApplicationContext : uses
+    ApplicationContext *-- ApplicationServices : wires
+    ApplicationContext *-- Infrastructure : wires
+    ApplicationServices --> DomainModel : manages
+    ApplicationServices --> Infrastructure : uses repositories
+    Infrastructure --> DomainModel : persists
+```
+
+The main flow is `Main` -> `ApplicationLauncher` -> `ApplicationContext`/`ConsoleApplication`. Application services coordinate domain entities such as `Patient`, `Doctor`, `Appointment`, and `MedicalRecord`, while infrastructure repositories provide file-based persistence.
+
 ## Quick Start
 
 ```bash
