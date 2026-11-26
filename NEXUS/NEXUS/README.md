@@ -18,25 +18,233 @@ NEXUS is a console-based Java 17+ hospital management system with domain-driven 
 
 ```mermaid
 classDiagram
-    direction LR
-    class ApplicationLauncher
-    class ConsoleApplication
-    class ApplicationContext
-    class ApplicationServices
-    class DomainModel
-    class Infrastructure
+    direction TB
 
-    ApplicationLauncher --> ApplicationContext : initializes
-    ApplicationLauncher --> ConsoleApplication : starts
-    ConsoleApplication --> ApplicationContext : uses
-    ApplicationContext *-- ApplicationServices : wires
-    ApplicationContext *-- Infrastructure : wires
-    ApplicationServices --> DomainModel : manages
-    ApplicationServices --> Infrastructure : uses repositories
-    Infrastructure --> DomainModel : persists
-```
+    class Person {
+        <<abstract>>
+        -id
+        -name
+        -dateOfBirth
+        +getRoleLabel()
+    }
+    class Employee {
+        <<abstract>>
+        -department
+        -hireDate
+    }
+    class Patient {
+        -bloodGroup
+        -allergies
+        -conditions
+        -status
+    }
+    class Doctor {
+        -specialization
+        -qualification
+        -consultationFee
+        +isAvailableAt()
+        +bookSlot()
+    }
+    class Nurse {
+        -shift
+        -assignedWard
+    }
+    class Schedulable {
+        <<interface>>
+        +isAvailableAt()
+        +bookSlot()
+    }
 
-The main flow is `Main` -> `ApplicationLauncher` -> `ApplicationContext`/`ConsoleApplication`. Application services coordinate domain entities such as `Patient`, `Doctor`, `Appointment`, and `MedicalRecord`, while infrastructure repositories provide file-based persistence.
+    class Appointment {
+        -patientId
+        -doctorId
+        -dateTime
+        -status
+        +confirm()
+        +reschedule()
+        +complete()
+    }
+    class AppointmentService {
+        +scheduleAppointment()
+        +detectConflicts()
+        +cancel()
+    }
+
+    class MedicalRecord {
+        -patientId
+        -diagnoses
+        -treatments
+        -prescriptions
+        +addDiagnosis()
+        +addPrescription()
+    }
+    class Prescription {
+        -patientId
+        -doctorId
+        -items
+        -dispensed
+        +markDispensed()
+    }
+    class PrescriptionItem {
+        <<record>>
+        -medicineName
+        -dosage
+        -frequency
+        -durationDays
+    }
+
+    class Hospital {
+        -name
+        -departments
+        +allocateBed()
+    }
+    class Department {
+        -type
+        -doctorIds
+        -nurseIds
+        +allocateBed()
+    }
+    class Ward {
+        -name
+        -rooms
+    }
+    class Room {
+        -roomNumber
+        -beds
+    }
+    class Bed {
+        -bedNumber
+        -occupied
+        -patientId
+        +allocate()
+        +release()
+    }
+    class Admission {
+        -patientId
+        -bedId
+        -status
+        +discharge()
+    }
+
+    class Invoice {
+        -patientId
+        -charges
+        -payments
+        -status
+        +getBalanceDue()
+        +recordPayment()
+    }
+    class Billable {
+        <<interface>>
+        +getAmount()
+        +getCategory()
+    }
+    class Payment {
+        <<abstract>>
+        -invoiceId
+        -amount
+        -method
+        +getTransactionDetails()
+    }
+    class CashPayment
+    class CardPayment
+    class InsurancePayment
+
+    class InsurancePolicy {
+        -policyNumber
+        -patientId
+        -coveragePercent
+        +calculateEligibleCoverage()
+    }
+    class Claim {
+        -policyNumber
+        -invoiceId
+        -claimAmount
+        -status
+        +approve()
+        +reject()
+    }
+
+    class EmergencyCase {
+        -patientId
+        -triageLevel
+        -assignedDoctorId
+        -ambulanceId
+        -status
+        +assignDoctor()
+        +transitionTo()
+    }
+    class Ambulance {
+        -vehicleNumber
+        -available
+        +dispatch()
+        +completeMission()
+    }
+    class Medicine {
+        <<abstract>>
+        -stockQuantity
+        -expiryDate
+        +reduceStock()
+        +calculatePrice()
+    }
+    class PharmacyService {
+        +dispensePrescription()
+        +restock()
+    }
+
+    Person <|-- Patient : is-a
+    Person <|-- Employee : is-a
+    Employee <|-- Doctor : is-a
+    Employee <|-- Nurse : is-a
+    Doctor ..|> Schedulable : implements
+
+    Patient "1" --> "0..*" Appointment : books
+    Doctor "1" --> "0..*" Appointment : attends
+    AppointmentService --> Appointment : schedules
+    AppointmentService --> Patient : validates
+    AppointmentService --> Doctor : checks availability
+
+    Patient "1" *-- "0..1" MedicalRecord : owns
+    MedicalRecord "1" *-- "0..*" Prescription : contains
+    Prescription "1" *-- "1..*" PrescriptionItem : has lines
+    Doctor "1" --> "0..*" Prescription : prescribes
+    PharmacyService --> Prescription : dispenses
+    PharmacyService --> Medicine : updates stock
+    PrescriptionItem --> Medicine : names medication
+
+    Hospital "1" *-- "1..*" Department : contains
+    Department "1" *-- "1..*" Ward : owns
+    Ward "1" *-- "1..*" Room : contains
+    Room "1" *-- "1..*" Bed : owns
+    Department "1" o-- "0..*" Doctor : assigns
+    Department "1" o-- "0..*" Nurse : assigns
+    Patient "1" --> "0..*" Admission : has episodes
+    Admission "1" --> "1" Bed : occupies
+
+    Patient "1" --> "0..*" Invoice : is billed
+    Invoice "1" *-- "1..*" Billable : aggregates charges
+    Invoice "1" *-- "0..*" Payment : records
+    Payment <|-- CashPayment : type
+    Payment <|-- CardPayment : type
+    Payment <|-- InsurancePayment : type
+
+    Patient "1" *-- "0..*" InsurancePolicy : holds
+    InsurancePolicy "1" o-- "0..*" Claim : has
+    Claim "1" --> "1" Invoice : settles
+
+    Patient "1" o-- "0..*" EmergencyCase : may have
+    EmergencyCase "1" --> "0..1" Doctor : assigned to
+    EmergencyCase "1" --> "0..1" Ambulance : transported by
+```    
+
+### UML Relationship Guide
+
+- `<|--` = inheritance/is-a: `Patient`, `Doctor`, and `Nurse` extend the shared people hierarchy.
+- `..|>` = interface realization: `Doctor` implements the `Schedulable` contract.
+- `*--` = composition: the aggregate owns child objects, such as `MedicalRecord` -> `Prescription`.
+- `o--` = aggregation: independently managed objects are associated, such as `Department` -> `Doctor`.
+- `-->` = association or dependency: IDs connect domain records across repositories and services.
+- Multiplicity on relationship lines shows expected cardinality, for example `Patient "1" --> "0..*" Appointment`.
 
 ## Quick Start
 
